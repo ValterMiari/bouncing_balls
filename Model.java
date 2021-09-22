@@ -61,8 +61,19 @@ class Model {
 	}
 
 	void handleCollision(Ball b1, Ball b2) { 
-		Vector2D rotatedVector = rectToPolar(new Vector2D(b1.x - b2.x, b1.y - b2.y));
+		collisionX = b1.x - b2.x;
+		collisionY = b1.y - b2.y;
+		Vector2D polarC = rectToPolar(new Vector2D(collisionX, collisionY));
+		// using the formula below to translate the axis theta degrees
+		// x' = x*cos(theta) + y*sin(theta)
+		// y' = -x*sin(theta) + y*cos(theta)
+		double theta = polarC.b;
+		double newX = collisionX * Math.cos(theta) + collisionY * Math.sin(theta);
+		double newY = -(collisionX * Math.sin(theta)) + collisionY * Math.cos(theta);
 
+	
+
+ 
 	}
 
 	Vector2D rectToPolar(Vector2D v) {
@@ -117,6 +128,15 @@ class Model {
 				return true;
 			}
 			return false;
+		}
+
+		Vector2D collisionCoordinates(Ball b) {
+			double x = Math.abs(this.x - b.x);
+			double y = Math.abs(this.y - b.y);
+			double angle = Math.atan2(y, x);
+			double newX = Math.cos(angle);
+			double newY = Math.sin(angle);
+			return Vector2D(newX, newY);
 		}
 
 		double length() {
