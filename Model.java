@@ -30,8 +30,7 @@ class Model {
 	void step(double deltaT) {
 		// TODO this method implements one step of simulation with a step deltaT
 		for (Ball b : balls) {
-
-			// O(n^2) not scalable, but sufficient for small amounts of balls
+			// O(n²) not scalable, but works just fine for small amounts of balls 
 			for (int i = 0; i < balls.length; i++) {
 				if (b.collision(balls[i])) {
 					System.out.println("Collision!");
@@ -60,6 +59,41 @@ class Model {
 		}
 	}
 
+	void handleCollision(Ball b1, Ball b2) { 
+	}
+
+	Vector2D rectToRect(Ball b) {
+		double length = b.length();
+		double theta;
+		switch (b) {
+			case (b.x < 0 && b.y >= 0):
+				theta = Math.arctan(b.y/b.x) + Math.PI;
+				break;
+			case (b.x < 0 && b.y < 0):
+				theta = Math.arctan(b.y/b.x) - Math.PI;
+				break;
+			case (b.x == 0 && b.y > 0):
+				theta = Math.PI/2;
+				break;
+			case (b.x == 0 && b.y < 0):
+				theta = -(Math.PI/2);
+				break;
+			case (b.x == 0 && b.y == 0):
+				throw Error("Undefined");
+				break;
+			default:
+				theta = Math.arctan(b.y/b.x);
+		}
+		
+		return Vector2D(length, theta); 
+	}
+
+	Vector2D polarToRect(Vector2D v) {
+		double x = v.a * Math.cos(v.b);
+		double y = v.a * Math.sin(v.b);
+		return Vector2D(x, y); 
+	}
+
 	/**
 	 * Simple inner class describing balls.
 	 */
@@ -71,6 +105,8 @@ class Model {
 			this.vx = vx;
 			this.vy = vy;
 			this.radius = r;
+			// We assume that the desity of the ball is 1
+			this.mass = Math.pow(r, 3);
 		}
 
 		boolean collision(Ball b) {
@@ -78,6 +114,10 @@ class Model {
 				return true;
 			}
 			return false;
+		}
+
+		double length() {
+			return Math.sqrt(x*x + y*y);
 		}
 
 		double euclideanDist(Ball b) {
@@ -88,6 +128,18 @@ class Model {
 		/**
 		 * Position, speed, and radius of the ball. You may wish to add other attributes.
 		 */
-		double x, y, vx, vy, radius;
+		double x, y, vx, vy, radius, mass;
+	}
+	/**
+	 * A two dimensional vector.
+	 */
+	class Vector2D {
+		
+		double a, b;
+		
+		Vector2D(double a, double b) {
+			this.a = x;
+			this.b = y;
+		}
 	}
 }
