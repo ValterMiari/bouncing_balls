@@ -62,7 +62,7 @@ class Model {
 	void handleCollision(Ball b1, Ball b2) { 
 	}
 
-	Vector2D rectToRect(Ball b) {
+	Vector2D rectToPolar(Ball b) {
 		double length = b.length();
 		double theta;
 		switch (b) {
