@@ -1,5 +1,6 @@
 package bouncing_balls;
 import java.lang.Math;
+import java.util.Vector;
 
 /**
  * The physics model.
@@ -60,29 +61,31 @@ class Model {
 	}
 
 	void handleCollision(Ball b1, Ball b2) { 
+		Vector2D rotatedVector = rectToPolar(new Vector2D(b1.x - b2.x, b1.y - b2.y));
+
 	}
 
-	Vector2D rectToPolar(Ball b) {
-		double length = b.length();
+	Vector2D rectToPolar(Vector2D v) {
+		double length = Math.sqrt(v.a*v.a + v.b*v.b);
 		double theta;
-		switch (b) {
-			case (b.x < 0 && b.y >= 0):
-				theta = Math.arctan(b.y/b.x) + Math.PI;
+		switch (v) {
+			case (v.a < 0 && v.b >= 0):
+				theta = Math.arctan(v.b/v.a) + Math.PI;
 				break;
-			case (b.x < 0 && b.y < 0):
-				theta = Math.arctan(b.y/b.x) - Math.PI;
+			case (v.a < 0 && v.b < 0):
+				theta = Math.arctan(v.b/v.a) - Math.PI;
 				break;
-			case (b.x == 0 && b.y > 0):
+			case (v.a == 0 && v.b > 0):
 				theta = Math.PI/2;
 				break;
-			case (b.x == 0 && b.y < 0):
+			case (v.a == 0 && v.b < 0):
 				theta = -(Math.PI/2);
 				break;
-			case (b.x == 0 && b.y == 0):
+			case (v.a == 0 && v.b == 0):
 				throw Error("Undefined");
 				break;
 			default:
-				theta = Math.arctan(b.y/b.x);
+				theta = Math.arctan(v.b/v.a);
 		}
 		
 		return Vector2D(length, theta); 
