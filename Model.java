@@ -36,6 +36,19 @@ class Model {
 				if (b.collision(balls[i])) {
 					System.out.println("Collision!");
 					// handle collision
+					System.out.println("Collision!");
+					// handle collision
+					vx1 = b.x + balls[i].mass*balls[i].x;
+					vy1 = b.y + balls[i].mass*balls[i].y;
+
+					vx2 = b.x - balls[i].x;
+					vy2 = b.y - balls[i].y;
+
+					b.vx = vx1;
+					b.vy = vy1;
+
+					balls[i].vx = vx2;
+					balls[i].vy = vy2;
 				}
 				else{
 					System.out.println("No collision");
