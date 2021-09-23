@@ -96,12 +96,11 @@ class Model {
 		deltaY = Math.abs(b1.y - b2.y);
 		theta = Math.atan2(y, x);
 		// rotate(theta);
-		Vector2D polarX = rectToPolar(new Vector2D(b1.x, b1.y));
-		Vector2D polarY = rectToPolar(new Vector2D(b2.x, b2.y));
+		Vector2D polarB1= rectToPolar(new Vector2D(b1.x, b1.y));
+		Vector2D polarB2 = rectToPolar(new Vector2D(b2.x, b2.y));
 		// using the formula below to translate the axis theta degrees
 		// x' = x*cos(theta) + y*sin(theta)
 		// y' = -x*sin(theta) + y*cos(theta)
-		double theta = polarC.b;
 		double newX = collisionX * Math.cos(theta) + collisionY * Math.sin(theta);
 		double newY = -(collisionX * Math.sin(theta)) + collisionY * Math.cos(theta);
 
