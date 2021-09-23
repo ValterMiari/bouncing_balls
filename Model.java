@@ -60,10 +60,44 @@ class Model {
 		}
 	}
 
+	/*Vector2D collisionCoordinates(Ball b1, Ball b2) {
+		double x, y, theta, newX, newY;
+		x = Math.abs(b1.x - b2.x);
+		y = Math.abs(b1.y - b2.y);
+		theta = Math.atan2(y, x);
+		tangentX = b1.radius * Math.cos(theta);
+		tangentY = b1.radius * Math.sin(theta);
+
+
+		if (b1.x < b2.x && b1.y < b2.y) {
+			newX = b1.x + tangentX; 			
+			newY = b1.y + tangentY;
+		}
+		else if (b1.x < b2.x && b1.y > b2.y) {
+			newX = b1.x + tangentX;
+			newY = b1.y - tangentY;
+		}
+		else if (b1.x > b2.x && b1.y > b2.y) {
+			newX = b1.x - tangentX;
+			newY = b1.y - tangentY;
+		}
+		else if (b1.x > b2.x && b1.y < b2.y) {
+			newX = b1.x - tangentX;
+			newY = b1.y + tangentY;
+		}
+		
+		newX = Math.cos(angle);
+		newY = Math.sin(angle);
+		return Vector2D(newX, newY);
+	}*/
+
 	void handleCollision(Ball b1, Ball b2) { 
-		collisionX = b1.x - b2.x;
-		collisionY = b1.y - b2.y;
-		Vector2D polarC = rectToPolar(new Vector2D(collisionX, collisionY));
+		deltaX = Math.abs(b1.x - b2.x);
+		deltaY = Math.abs(b1.y - b2.y);
+		theta = Math.atan2(y, x);
+		// rotate(theta);
+		Vector2D polarX = rectToPolar(new Vector2D(b1.x, b1.y));
+		Vector2D polarY = rectToPolar(new Vector2D(b2.x, b2.y));
 		// using the formula below to translate the axis theta degrees
 		// x' = x*cos(theta) + y*sin(theta)
 		// y' = -x*sin(theta) + y*cos(theta)
@@ -78,8 +112,9 @@ class Model {
 
 	Vector2D rectToPolar(Vector2D v) {
 		double length = Math.sqrt(v.a*v.a + v.b*v.b);
-		double theta;
-		switch (v) {
+		double theta = Math.atan2(v.b, v.a);
+
+		/*switch (v) {
 			case (v.a < 0 && v.b >= 0):
 				theta = Math.arctan(v.b/v.a) + Math.PI;
 				break;
@@ -97,7 +132,7 @@ class Model {
 				break;
 			default:
 				theta = Math.arctan(v.b/v.a);
-		}
+		}*/
 		
 		return Vector2D(length, theta); 
 	}
@@ -128,15 +163,6 @@ class Model {
 				return true;
 			}
 			return false;
-		}
-
-		Vector2D collisionCoordinates(Ball b) {
-			double x = Math.abs(this.x - b.x);
-			double y = Math.abs(this.y - b.y);
-			double angle = Math.atan2(y, x);
-			double newX = Math.cos(angle);
-			double newY = Math.sin(angle);
-			return Vector2D(newX, newY);
 		}
 
 		double length() {
