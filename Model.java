@@ -36,9 +36,7 @@ class Model {
 				if (b.collision(balls[i])) {
 					System.out.println("Collision!");
 					// handle collision
-					System.out.println("Collision!");
-					// handle collision
-					vx1 = b.x + balls[i].mass*balls[i].x;
+					/*vx1 = b.x + balls[i].mass*balls[i].x;
 					vy1 = b.y + balls[i].mass*balls[i].y;
 
 					vx2 = b.x - balls[i].x;
@@ -48,7 +46,8 @@ class Model {
 					b.vy = vy1;
 
 					balls[i].vx = vx2;
-					balls[i].vy = vy2;
+					balls[i].vy = vy2;*/
+
 				}
 				else{
 					System.out.println("No collision");
@@ -73,53 +72,46 @@ class Model {
 		}
 	}
 
-	/*Vector2D collisionCoordinates(Ball b1, Ball b2) {
-		double x, y, theta, newX, newY;
-		x = Math.abs(b1.x - b2.x);
-		y = Math.abs(b1.y - b2.y);
-		theta = Math.atan2(y, x);
-		tangentX = b1.radius * Math.cos(theta);
-		tangentY = b1.radius * Math.sin(theta);
-
-
-		if (b1.x < b2.x && b1.y < b2.y) {
-			newX = b1.x + tangentX; 			
-			newY = b1.y + tangentY;
-		}
-		else if (b1.x < b2.x && b1.y > b2.y) {
-			newX = b1.x + tangentX;
-			newY = b1.y - tangentY;
-		}
-		else if (b1.x > b2.x && b1.y > b2.y) {
-			newX = b1.x - tangentX;
-			newY = b1.y - tangentY;
-		}
-		else if (b1.x > b2.x && b1.y < b2.y) {
-			newX = b1.x - tangentX;
-			newY = b1.y + tangentY;
-		}
-		
-		newX = Math.cos(angle);
-		newY = Math.sin(angle);
-		return Vector2D(newX, newY);
-	}*/
-
 	void handleCollision(Ball b1, Ball b2) { 
-		deltaX = Math.abs(b1.x - b2.x);
-		deltaY = Math.abs(b1.y - b2.y);
-		theta = Math.atan2(y, x);
-		// rotate(theta);
-		Vector2D polarB1= rectToPolar(new Vector2D(b1.x, b1.y));
-		Vector2D polarB2 = rectToPolar(new Vector2D(b2.x, b2.y));
+		double dx, dy, theta, pB1x, pB1y, pB2x, pB2y;
+		Vector2D pB1, pB2, transformedB1, transformedB2;
+
+		dx = Math.abs(b1.x - b2.x);
+		dy = Math.abs(b1.y - b2.y);
+		theta = Math.atan2(dy, dx);
+
+		pB1 = rectToPolar(new Vector2D(b1.x, b1.y));
+		pB2 = rectToPolar(new Vector2D(b2.x, b2.y));
 		// using the formula below to translate the axis theta degrees
-		// x' = x*cos(theta) + y*sin(theta)
-		// y' = -x*sin(theta) + y*cos(theta)
+		// x' = r*cos(alpha)*cos(theta) + r*sin(alpha)*sin(theta)
+		// y' = rsin(alpha)cos(theta) - rcos(alpha)sin(theta)
+		pB1x = pB1.a * Math.cos(pB1.b) * Math.cos(theta) + pB1.a * Math.sin(pB1.b) * Math.sin(theta);
+		pB1y = pB1.a * Math.sin(pB1.b) * Math.cos(theta) - pB1.a * Math.cos(pB1.b) * Math.sin(theta);
+		pB2x = pB2.a * Math.cos(pB2.b) * Math.cos(theta) + pB2.a * Math.sin(pB2.b) * Math.sin(theta);
+		pB2y = pB2.a * Math.sin(pB2.b) * Math.cos(theta) - pB2.a * Math.cos(pB2.b) * Math.sin(theta);
+
+		transformedB1 = new Ball(pB1x, pB1y, b1.vx, b1.vy, b1.radius, b1.mass);//new Vector2D(pB1x, pB1y);
+		transformedB2 = new Ball(pB2x, pB2y, b2.vx, b2.vy, b2.radius, b2.mass);
+
+		Vector2D impactOnCollision = collisionImpact(transformedB1, transformedB2); 
+
+		Ball 
+
+		//Vector2D pointAfterImpact = rectToPolar(collisionImpact.a, collisionImpact.b)
+
 		double newX = collisionX * Math.cos(theta) + collisionY * Math.sin(theta);
 		double newY = -(collisionX * Math.sin(theta)) + collisionY * Math.cos(theta);
+	}
 
-	
+	Vector2D collisionImpact(Ball b1, Ball b2) {
+		// note: I believe that only the velocity in the x directrion is the one that matters, since it is transformed to
+		// a horizontal collision
+		double v1 = ((b1.mass - b2.mass) / (b1.mass + b2.mass)) * b1.vx 
+					+ ((2 * b2.mass) / (b1.mass + b2.mass)) * b2.vx; 
+		double v2 = ((2 * b1.mass) / (b1.mass + b2.mass)) * b1.vx
+					+ ((b2.mass - b1.mass)/(b1.mass + b2.mass)) * b2.vx;
 
- 
+		return new Vector2D(v1, v2);
 	}
 
 	Vector2D rectToPolar(Vector2D v) {
@@ -146,13 +138,13 @@ class Model {
 				theta = Math.arctan(v.b/v.a);
 		}*/
 		
-		return Vector2D(length, theta); 
+		return new Vector2D(length, theta); 
 	}
 
 	Vector2D polarToRect(Vector2D v) {
 		double x = v.a * Math.cos(v.b);
 		double y = v.a * Math.sin(v.b);
-		return Vector2D(x, y); 
+		return new Vector2D(x, y); 
 	}
 
 	/**
@@ -199,8 +191,38 @@ class Model {
 		double a, b;
 		
 		Vector2D(double a, double b) {
-			this.a = x;
-			this.b = y;
+			this.a = a;
+			this.b = b;
 		}
 	}
+		/*Vector2D collisionCoordinates(Ball b1, Ball b2) {
+		double x, y, theta, newX, newY;
+		x = Math.abs(b1.x - b2.x);
+		y = Math.abs(b1.y - b2.y);
+		theta = Math.atan2(y, x);
+		tangentX = b1.radius * Math.cos(theta);
+		tangentY = b1.radius * Math.sin(theta);
+
+
+		if (b1.x < b2.x && b1.y < b2.y) {
+			newX = b1.x + tangentX; 			
+			newY = b1.y + tangentY;
+		}
+		else if (b1.x < b2.x && b1.y > b2.y) {
+			newX = b1.x + tangentX;
+			newY = b1.y - tangentY;
+		}
+		else if (b1.x > b2.x && b1.y > b2.y) {
+			newX = b1.x - tangentX;
+			newY = b1.y - tangentY;
+		}
+		else if (b1.x > b2.x && b1.y < b2.y) {
+			newX = b1.x - tangentX;
+			newY = b1.y + tangentY;
+		}
+		
+		newX = Math.cos(angle);
+		newY = Math.sin(angle);
+		return Vector2D(newX, newY);
+	}*/
 }
