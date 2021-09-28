@@ -83,11 +83,11 @@ class Model {
 		
 		// The final velocity after rotation and impact has now been calculated
 		// Now rotate the velocity back to original coordinate system
-		nB1vx = impactOnCollision.a * Math.cos(-theta) - rB1vy * Math.sin(-theta);
-		nB1vy = -impactOnCollision.a * Math.sin(-theta) + rB1vy * Math.cos(-theta);
+		nB1vx = impactOnCollision.a * Math.cos(theta) - rB1vy * Math.sin(theta);
+		nB1vy = impactOnCollision.a * Math.sin(theta) + rB1vy * Math.cos(theta);
 
-		nB2vx = impactOnCollision.b * Math.cos(-theta) - rB2vy * Math.sin(-theta); 
-		nB2vy = -impactOnCollision.b * Math.sin(-theta) + rB2vy * Math.cos(-theta);
+		nB2vx = impactOnCollision.b * Math.cos(theta) - rB2vy * Math.sin(theta); 
+		nB2vy = impactOnCollision.b * Math.sin(theta) + rB2vy * Math.cos(theta);
 
  		b1Velocity = new Vector2D(nB1vx, nB1vy);
 		b2Velocity = new Vector2D(nB2vx, nB2vy);
